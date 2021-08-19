@@ -39,24 +39,6 @@ void aes_decrypt(const BYTE in[],             // 16 bytes of ciphertext
                  int keysize);                // Bit length of the key, 128, 192, or 256
 
 ///////////////////
-// AES - CBC
-///////////////////
-int aes_encrypt_cbc(const BYTE in[],          // Plaintext
-                    size_t in_len,            // Must be a multiple of AES_BLOCK_SIZE
-                    BYTE out[],               // Ciphertext, same length as plaintext
-                    const WORD key[],         // From the key setup
-                    int keysize,              // Bit length of the key, 128, 192, or 256
-                    const BYTE iv[]);         // IV, must be AES_BLOCK_SIZE bytes long
-
-// Only output the CBC-MAC of the input.
-int aes_encrypt_cbc_mac(const BYTE in[],      // plaintext
-                        size_t in_len,        // Must be a multiple of AES_BLOCK_SIZE
-                        BYTE out[],           // Output MAC
-                        const WORD key[],     // From the key setup
-                        int keysize,          // Bit length of the key, 128, 192, or 256
-                        const BYTE iv[]);     // IV, must be AES_BLOCK_SIZE bytes long
-
-///////////////////
 // AES - CTR
 ///////////////////
 void increment_iv(BYTE iv[],                  // Must be a multiple of AES_BLOCK_SIZE
@@ -114,10 +96,6 @@ int aes_decrypt_ccm(const BYTE ciphertext[],             // IN  - Ciphertext, th
 ///////////////////
 // Test functions
 ///////////////////
-int aes_test();
-int aes_ecb_test();
-int aes_cbc_test();
 int aes_ctr_test();
-int aes_ccm_test();
 
 #endif   // AES_H
