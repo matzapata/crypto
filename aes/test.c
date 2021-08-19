@@ -1,6 +1,6 @@
 /*************************** HEADER FILES ***************************/
 #include <stdio.h>
-#include <memory.h>
+#include <string.h>
 #include "aes.h"
 
 /*********************** FUNCTION DEFINITIONS ***********************/
