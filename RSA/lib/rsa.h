@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 
-// This is the header file for the library librsaencrypt.a
 
-// Change this line to the file you'd like to use as a source of primes.
-// The format of the file should be one prime per line.
-char *PRIME_SOURCE_FILE = "primes.txt";
+// Definimos fuente de los numeros primos si primes.txt o primes.h
+#define TXT 0
+#define HEADER 1
+#define PRIMES_SRC HEADER
 
 
 struct public_key_class{
