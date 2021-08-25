@@ -5,7 +5,7 @@ main: funciones.o main.o rsa.o
 main.o:  main.c
 	gcc -c main.c -o main.o -Wall -I ../lib/
 
-functions.o:  funciones.c 
+funciones.o:  funciones.c 
 	gcc -c funciones.c -o funciones.o -Wall -I ../lib/
 
 rsa.o:  ../lib/rsa.c
