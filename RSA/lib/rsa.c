@@ -146,7 +146,7 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
 
 #else
   // long long prime_count = 37;
-  long long prime_count = sizeof(primes)/sizeof(primes[0]);
+  long long prime_count = sizeof(primes) / sizeof(primes[0]);
 #endif
 
   // choose random primes from the list, store them as p,q
