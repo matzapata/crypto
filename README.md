@@ -1,36 +1,22 @@
 
-# Procesos
+# Problemas
+Aes -> falta resolver problema de padding. Caso es que fuente no es exactamente de 16 bytes utiles
+
+# Rutinas
+
+## Enviar archivo a contacto
+Genero clave random para AES
+Encripto archivo con AES
+Encripto clave publica contacto con RSA
+Envio archivo encriptado y clave encriptada
 
 ## Firma digital
+Calculo sha256 del archivo
+Encripto output sha256 con clave privada firmante
+Envio archivo y resultado paso anterior
 
-Genera un archivo como el siguiente
-{
-    hash: "ajhhalabsal", (resultado sha256 sobre content{})
-    public_key: "lahkjsbas:ajkhs", (Firma del firmante),
-    certificate: "shashabs" (Ente certificante firma public key)
-    content: {
-        timestamp: "10/10/10-15:20"
-        body: "............."
-    }
-}
-
-## Encriptacion asimetrica
-Se recibe por usb o bt el archivo a encriptar
-Se calcula el hash y se lo muestra por pantalla para que lo verifique el usuario y confirme o cancele 
-Se recibe por usb o bt la clave publica con la que se quiere firmar
-Se muestra por pantalla para que lo confirme el usuario
-Se encripta con RSA
-Se devuelve el archivo encriptado
-
-## Almacenamiento de datos
-Generacion de llave simetrica
-Almacenamiento de dicha clave segura
-Encriptacion de archivo con AES y almacenamiento en memoria interna (SD)
-Se devuelve el archivo encriptado por usb o bt
+## Verificacion firma
+Calculo sha256 del archivo
+Desencripto output sha256 con clave publica firmante
 
 
-## Visualizacion temporal de data
-Enviamos data json encriptada con clave que es conformada con una variable tiempo en juego,  
-{
-
-}

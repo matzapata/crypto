@@ -7,7 +7,7 @@
 // Definimos fuente de los numeros primos si primes.txt o primes.h
 #define TXT 0
 #define HEADER 1
-#define PRIMES_SRC HEADER
+#define PRIMES_SRC TXT
 
 
 struct public_key_class{

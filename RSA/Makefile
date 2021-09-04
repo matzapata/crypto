@@ -1,21 +1,12 @@
-CFLAGS = -g -Wall
-LDFLAGS = -g
-CC = gcc
-LIBS_PATH = -L.
-LDLIBS = $(LIBS_PATH) -lrsa -lm
+test: test.o rsa.o   
+	gcc -o test test.o rsa.o -Wall
 
-test: test.o librsa.a rsa.h
+test.o:  test.c
+	gcc -c test.c -o test.o -Wall -I ./lib/
 
-librsa.a: rsa.o
-	ar rc librsa.a rsa.o
-	ranlib librsa.a
-
-rsa.o: rsa.c rsa.h
-	gcc -c rsa.c
-
-.PHONY: clean, all
+rsa.o:  ./lib/rsa.c
+	gcc -c ./lib/rsa.c -o ./rsa.o -Wall
 
 clean:
-	rm -f *.o a.out rsa.o rsa librsa.a
+	rm -f *.o test
 
-all: clean rsa

@@ -231,8 +231,7 @@ long long *rsa_encrypt(const char *message, const unsigned long message_size,
   long long *encrypted = malloc(sizeof(long long) * message_size);
   if (encrypted == NULL)
   {
-    fprintf(stderr,
-            "Error: Heap allocation failed.\n");
+    fprintf(stderr, "Error: Heap allocation failed.\n");
     return NULL;
   }
   long long i = 0;

@@ -51,9 +51,6 @@ void printKeys(struct public_key_class * pub, struct private_key_class * priv);
 // Carga las llaves generadas por src Keys
 bool loadKeys(struct public_key_class ** pubDest, struct private_key_class ** privDest, const char *srcFolder);
 
-short rsa_encrypt_file(const char *src_filename, const char *dest_filename, const struct public_key_class *pub);
-
-
 /***********************************************************************************************************************************
  *** FIN DEL MODULO
  **********************************************************************************************************************************/

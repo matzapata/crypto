@@ -1,100 +1,125 @@
-/*******************************************************************************************************************************/ /**
- *
- * @file	main.c
- * @brief   Implementacion RSA para encriptacion asimetrica
- * @date
- * @author
- *
- **********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
- *** INCLUDES
- **********************************************************************************************************************************/
 #include <stdio.h>
+#include "rsa.h"
 #include <string.h>
 #include <stdlib.h>
-#include "rsa.h"
 #include "funciones.h"
 
-/***********************************************************************************************************************************
- *** DEFINES PRIVADOS AL MODULO
- **********************************************************************************************************************************/
+void displayHelp();
+void WriteKeys();
+int Encrypt();
+int Decrypt();
 
-/***********************************************************************************************************************************
- *** MACROS PRIVADAS AL MODULO
- **********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
- *** TIPOS DE DATOS PRIVADOS AL MODULO
- **********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
- *** TABLAS PRIVADAS AL MODULO
- **********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
- *** VARIABLES GLOBALES PUBLICAS
- **********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
- *** VARIABLES GLOBLES PRIVADAS AL MODULO
- **********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
- *** PROTOTIPO DE FUNCIONES PRIVADAS AL MODULO
- **********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
-*** CONFIGURACION DE ERRORES
-**********************************************************************************************************************************/
-
-/***********************************************************************************************************************************
- *** IMPLEMENTACION DE FUNCIONES PUBLICAS
- **********************************************************************************************************************************/
-int main(void)
+int main(int argc, char **argv)
 {
-    // generateKeys("./keys/");
-    // // Generamos las llaves
-    struct public_key_class * pub = NULL;
-    struct private_key_class  * priv = NULL;
-    loadKeys(&pub, &priv, "./keys/");
-    printKeys(pub, priv);
-
-    rsa_encrypt_file("./tests/test.txt", "./tests/test.enc", pub);
-    // // Obtenemos el mesnaje a encriptar
-    // // En este caso con el resultador del hash de un archivo
-    // char message[] = "BA:78:16:BF:8F:01:CF:EA:41:41:40:DE:5D:AE:22:23:B0:03:61:A3:96:17:7A:9C:B4:10:FF:61:F2:00:15:AD";
-
-    // // Encriptamos
-    // long long *encrypted = rsa_encrypt(message, sizeof(message), pub);
-    // if (!encrypted)
-    // {
-    //     fprintf(stderr, "Error in encryption!\n");
-    //     return 1;
-    // }
-
-    // // Desencriptamos
-    // char *decrypted = rsa_decrypt(encrypted, 8 * sizeof(message), priv);
-    // if (!decrypted)
-    // {
-    //     fprintf(stderr, "Error in decryption!\n");
-    //     return 1;
-    // }
-    // printf("\nDecrypted:\n");
-    // printf("%s\n", decrypted);
-
-    free(pub);
-    free(priv);
-    // free(encrypted);
-    // free(decrypted);
-
-    printf("\n");
+    if (argc > 1)
+    {
+        int command = atoi(argv[1]);
+        if (command == 1)
+        {
+            printf("WriteKeys\n");
+            WriteKeys();
+        }
+        else if (command == 2)
+        {
+            printf("Encrypt\n");
+            Encrypt();
+        }
+        else if (command == 3)
+        {
+            printf("Decrypt\n");
+            Decrypt();
+        }
+        else
+        {
+            displayHelp();
+        }
+    }
+    else
+    {
+        displayHelp();
+    }
 
     return 0;
 }
 
-/***********************************************************************************************************************************
- *** IMPLEMNTACION DE FUNCIONES PRIVADAS AL MODULO
- **********************************************************************************************************************************/
+void displayHelp()
+{
+    printf("Faltan argumentos. Ingrese ./main <mode>.\n");
+    printf("1 - Genera llaves publica y privada y la almacena en ./keys/priv.key ./keys/pub.key\n");
+    printf("2 - Encripta mensaje y lo guarda en ./tests/enc\n");
+    printf("3 - Desencripta el mensaje guardado en ./tests/enc\n");
+}
 
-/*--------------------------------------------------------------------------------------------------------------------------------*/
+void WriteKeys()
+{
+    generateKeys("./keys/");
+}
+
+int Encrypt()
+{
+    struct public_key_class *pub = NULL;
+    struct private_key_class *priv = NULL;
+    loadKeys(&pub, &priv, "./keys/");
+    printKeys(pub, priv);
+
+    char message[16] = "BA:78:16:BF:8F:";
+    int size = 16;
+
+    printf("Original:\n");
+    printf("%s\n", message);
+
+    long long *encrypted = rsa_encrypt(message, size, pub);
+    if (!encrypted)
+    {
+        fprintf(stderr, "Error in encryption!\n");
+        return 1;
+    }
+
+    FILE *enc_file = fopen("./tests/enc", "wb");
+    if (fwrite(encrypted, sizeof(long long), size, enc_file) != size)
+    {
+        printf("File write error.");
+    }
+    fclose(enc_file);
+
+    free(encrypted);
+    return 0;
+}
+
+int Decrypt()
+{
+    struct public_key_class *pub = NULL;
+    struct private_key_class *priv = NULL;
+    loadKeys(&pub, &priv, "./keys/");
+    printKeys(pub, priv);
+
+    // Prueba con output de sha
+    char message[16] = "BA:78:16:BF:8F:";
+    int size = 16;
+
+    printf("Original:\n");
+    printf("%s\n", message);
+
+    // DESENCRIPTAMOS
+    long long encrypted_r[16];
+
+    FILE *enc_file_r = fopen("./tests/enc", "rb");
+    if (fread(encrypted_r, sizeof(long long), size, enc_file_r) != size)
+    {
+        printf("Error");
+    }
+    fclose(enc_file_r);
+
+    char *decrypted = rsa_decrypt(encrypted_r, 8 * sizeof(message), priv);
+    if (!decrypted)
+    {
+        fprintf(stderr, "Error in decryption!\n");
+        return 1;
+    }
+    printf("\nDecrypted:\n");
+    printf("%s\n", decrypted);
+
+    printf("\n");
+    free(decrypted);
+    return 0;
+}
