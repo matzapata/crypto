@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "aes256.h"
+#include <string.h>
 
 #define DUMP(s, i, buf, sz)          \
     {                                \
@@ -11,12 +12,17 @@
         printf("\n");                \
     }
 
+
 int main(int argc, char *argv[])
 {
     aes256_context ctx;
     uint8_t key[32] = "key";
-    uint8_t buf[16] = "hola";
+    uint8_t src[] = "hola";
+    uint8_t buf[16];
     uint8_t i;
+
+    // NOTA: Solucion padding. No es la opcion mas segura pero funciona
+    strncpy(buf, src, 16);
 
     /* put a test vector */
     // for (i = 0; i < sizeof(buf);i++) buf[i] = i * 16 + i;

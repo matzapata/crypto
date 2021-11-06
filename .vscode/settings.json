@@ -3,6 +3,7 @@
         "memory.h": "c",
         "stdlib.h": "c",
         "stdio.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "aes256.h": "c"
     }
 }

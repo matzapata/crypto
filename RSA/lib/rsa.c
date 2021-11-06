@@ -10,26 +10,26 @@
 #include "primes.h"
 #endif
 
-char buffer[1024];
+int8_t buffer[1024];
 const int MAX_DIGITS = 50;
 int i, j = 0;
 
 struct public_key_class
 {
-  long long modulus;
-  long long exponent;
+  int64_t  modulus;
+  int64_t  exponent;
 };
 
 struct private_key_class
 {
-  long long modulus;
-  long long exponent;
+  int64_t  modulus;
+  int64_t  exponent;
 };
 
 // This should totally be in the math library.
-long long gcd(long long a, long long b)
+int64_t  gcd(int64_t  a, int64_t  b)
 {
-  long long c;
+  int64_t  c;
   while (a != 0)
   {
     c = a;
@@ -39,9 +39,9 @@ long long gcd(long long a, long long b)
   return b;
 }
 
-long long ExtEuclid(long long a, long long b)
+int64_t  ExtEuclid(int64_t  a, int64_t  b)
 {
-  long long x = 0, y = 1, u = 1, v = 0, gcd = b, m, n, q, r;
+  int64_t  x = 0, y = 1, u = 1, v = 0, gcd = b, m, n, q, r;
   while (a != 0)
   {
     q = gcd / a;
@@ -57,14 +57,14 @@ long long ExtEuclid(long long a, long long b)
   }
   return y;
 }
-static inline long long modmult(long long a, long long b, long long mod)
+static inline int64_t  modmult(int64_t  a, int64_t  b, int64_t  mod)
 {
   // this is necessary since we will be dividing by a
   if (a == 0)
   {
     return 0;
   }
-  register long long product = a * b;
+  register int64_t  product = a * b;
   //if multiplication does not overflow, we can use it
   if (product / a == b)
   {
@@ -86,7 +86,7 @@ static inline long long modmult(long long a, long long b, long long mod)
     return (product << 1) % mod;
   }
   //implicit else: this is about 10x slower than the code above, but it will not overflow
-  long long sum;
+  int64_t  sum;
   sum = 0;
   while (b > 0)
   {
@@ -97,9 +97,9 @@ static inline long long modmult(long long a, long long b, long long mod)
   }
   return sum;
 }
-long long rsa_modExp(long long b, long long e, long long m)
+int64_t  rsa_modExp(int64_t  b, int64_t  e, int64_t  m)
 {
-  long long product;
+  int64_t  product;
   product = 1;
   if (b < 0 || e < 0 || m <= 0)
   {
@@ -119,7 +119,7 @@ long long rsa_modExp(long long b, long long e, long long m)
 }
 // Calling this function will generate a public and private key and store them in the pointers
 // it is given.
-void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, char *PRIME_SOURCE_FILE)
+void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, int8_t *PRIME_SOURCE_FILE)
 {
 #if PRIMES_SRC == TXT
   FILE *primes_list;
@@ -130,7 +130,7 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
   }
 
   // count number of primes in the list
-  long long prime_count = 0;
+  int64_t  prime_count = 0;
   do
   {
     int bytes_read = fread(buffer, 1, sizeof(buffer) - 1, primes_list);
@@ -145,22 +145,22 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
   } while (feof(primes_list) == 0);
 
 #else
-  // long long prime_count = 37;
-  long long prime_count = sizeof(primes) / sizeof(primes[0]);
+  // int64_t  prime_count = 37;
+  int64_t  prime_count = sizeof(primes) / sizeof(primes[0]);
 #endif
 
   // choose random primes from the list, store them as p,q
-  long long p = 0;
-  long long q = 0;
+  int64_t  p = 0;
+  int64_t  q = 0;
 
   //values of e should be sufficiently large to protect against naive attacks
-  long long e = (2 << 16) + 1;
-  long long d = 0;
-  long long max = 0;
-  long long phi_max = 0;
+  int64_t  e = (2 << 16) + 1;
+  int64_t  d = 0;
+  int64_t  max = 0;
+  int64_t  phi_max = 0;
 
 #if PRIMES_SRC == TXT
-  char prime_buffer[MAX_DIGITS];
+  int8_t prime_buffer[MAX_DIGITS];
 #endif
 
   srand(time(NULL));
@@ -216,7 +216,7 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
     d = d + phi_max;
   }
 
-  // printf("primes are %lld and %lld\n", (long long)p, (long long)q);
+  // printf("primes are %lld and %lld\n", (int64_t )p, (int64_t )q);
   // We now store the public / private keys in the appropriate structs
   pub->modulus = max;
   pub->exponent = e;
@@ -225,16 +225,16 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
   priv->exponent = d;
 }
 
-long long *rsa_encrypt(const char *message, const unsigned long message_size,
+int64_t  *rsa_encrypt(const int8_t *message, const unsigned long message_size,
                        const struct public_key_class *pub)
 {
-  long long *encrypted = malloc(sizeof(long long) * message_size);
+  int64_t  *encrypted = malloc(sizeof(int64_t ) * message_size);
   if (encrypted == NULL)
   {
     fprintf(stderr, "Error: Heap allocation failed.\n");
     return NULL;
   }
-  long long i = 0;
+  int64_t  i = 0;
   for (i = 0; i < message_size; i++)
   {
     if ((encrypted[i] = rsa_modExp(message[i], pub->exponent, pub->modulus)) == -1)
@@ -243,20 +243,20 @@ long long *rsa_encrypt(const char *message, const unsigned long message_size,
   return encrypted;
 }
 
-char *rsa_decrypt(const long long *message,
+int8_t *rsa_decrypt(const int64_t  *message,
                   const unsigned long message_size,
                   const struct private_key_class *priv)
 {
-  if (message_size % sizeof(long long) != 0)
+  if (message_size % sizeof(int64_t ) != 0)
   {
     fprintf(stderr,
-            "Error: message_size is not divisible by %d, so cannot be output of rsa_encrypt\n", (int)sizeof(long long));
+            "Error: message_size is not divisible by %d, so cannot be output of rsa_encrypt\n", (int)sizeof(int64_t ));
     return NULL;
   }
-  // We allocate space to do the decryption (temp) and space for the output as a char array
+  // We allocate space to do the decryption (temp) and space for the output as a int8_t array
   // (decrypted)
-  char *decrypted = malloc(message_size / sizeof(long long));
-  char *temp = malloc(message_size);
+  int8_t *decrypted = malloc(message_size / sizeof(int64_t ));
+  int8_t *temp = malloc(message_size);
   if ((decrypted == NULL) || (temp == NULL))
   {
     fprintf(stderr,
@@ -264,7 +264,7 @@ char *rsa_decrypt(const long long *message,
     return NULL;
   }
   // Now we go through each 8-byte chunk and decrypt it.
-  long long i = 0;
+  int64_t  i = 0;
   for (i = 0; i < message_size / 8; i++)
   {
     if ((temp[i] = rsa_modExp(message[i], priv->exponent, priv->modulus)) == -1)
@@ -273,7 +273,7 @@ char *rsa_decrypt(const long long *message,
       return NULL;
     }
   }
-  // The result should be a number in the char range, which gives back the original byte.
+  // The result should be a number in the int8_t range, which gives back the original byte.
   // We put that into decrypted, then return.
   for (i = 0; i < message_size / 8; i++)
   {

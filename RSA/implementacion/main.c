@@ -6,14 +6,14 @@
 
 void displayHelp();
 void WriteKeys();
-int Encrypt();
-int Decrypt();
+uint8_t Encrypt();
+uint8_t Decrypt();
 
-int main(int argc, char **argv)
+int8_t main(int32_t argc, int8_t  **argv)
 {
     if (argc > 1)
     {
-        int command = atoi(argv[1]);
+        uint8_t command = atoi(argv[1]);
         if (command == 1)
         {
             printf("WriteKeys\n");
@@ -55,20 +55,20 @@ void WriteKeys()
     generateKeys("./keys/");
 }
 
-int Encrypt()
+uint8_t Encrypt()
 {
     struct public_key_class *pub = NULL;
     struct private_key_class *priv = NULL;
     loadKeys(&pub, &priv, "./keys/");
     printKeys(pub, priv);
 
-    char message[16] = "BA:78:16:BF:8F:";
-    int size = 16;
+    int8_t  message[16] = "BA:78:16:BF:8F:";
+    uint8_t size = 16;
 
     printf("Original:\n");
     printf("%s\n", message);
 
-    long long *encrypted = rsa_encrypt(message, size, pub);
+    int64_t  *encrypted = rsa_encrypt(message, size, pub);
     if (!encrypted)
     {
         fprintf(stderr, "Error in encryption!\n");
@@ -76,7 +76,7 @@ int Encrypt()
     }
 
     FILE *enc_file = fopen("./tests/enc", "wb");
-    if (fwrite(encrypted, sizeof(long long), size, enc_file) != size)
+    if (fwrite(encrypted, sizeof(int64_t ), size, enc_file) != size)
     {
         printf("File write error.");
     }
@@ -86,7 +86,7 @@ int Encrypt()
     return 0;
 }
 
-int Decrypt()
+uint8_t Decrypt()
 {
     struct public_key_class *pub = NULL;
     struct private_key_class *priv = NULL;
@@ -94,23 +94,23 @@ int Decrypt()
     printKeys(pub, priv);
 
     // Prueba con output de sha
-    char message[16] = "BA:78:16:BF:8F:";
-    int size = 16;
+    int8_t  message[16] = "BA:78:16:BF:8F:";
+    uint8_t size = 16;
 
     printf("Original:\n");
     printf("%s\n", message);
 
     // DESENCRIPTAMOS
-    long long encrypted_r[16];
+    int64_t  encrypted_r[16];
 
     FILE *enc_file_r = fopen("./tests/enc", "rb");
-    if (fread(encrypted_r, sizeof(long long), size, enc_file_r) != size)
+    if (fread(encrypted_r, sizeof(int64_t ), size, enc_file_r) != size)
     {
         printf("Error");
     }
     fclose(enc_file_r);
 
-    char *decrypted = rsa_decrypt(encrypted_r, 8 * sizeof(message), priv);
+    int8_t  *decrypted = rsa_decrypt(encrypted_r, 8 * sizeof(message), priv);
     if (!decrypted)
     {
         fprintf(stderr, "Error in decryption!\n");

@@ -61,7 +61,7 @@
 int main(void) {
 
     // Ejemplo calculo hash de archivo
-    BYTE * hash;
+    uint8_t * hash;
     
     hash = sha256File("./tests/test.txt");
 

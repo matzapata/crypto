@@ -60,10 +60,10 @@
 /***********************************************************************************************************************************
  *** IMPLEMENTACION DE FUNCIONES PUBLICAS
  **********************************************************************************************************************************/
-BYTE * sha256File(const char *filename)
+uint8_t * sha256File(const char *filename)
 {
     FILE *file;
-    BYTE buf[16];
+    uint8_t buf[16];
     SHA256_CTX ctx;
     uint8_t * out = (uint8_t *) malloc(SHA256_BLOCK_SIZE*sizeof(uint8_t));
 
@@ -93,7 +93,7 @@ BYTE * sha256File(const char *filename)
     return out;
 }
 
-void printHash(const BYTE * hash, const size_t size)
+void printHash(const uint8_t * hash, const size_t size)
 {
     int i;
     for (i = 0; i < size; i++)

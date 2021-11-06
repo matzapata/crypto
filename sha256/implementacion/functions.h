@@ -44,8 +44,8 @@
 /*
  * Calcula el hash de un archivo pasado como arg y lo devuelve 
 */
-BYTE * sha256File(const char * filename);
-void printHash(const BYTE * hash, const size_t size);
+uint8_t * sha256File(const char * filename);
+void printHash(const uint8_t * hash, const size_t size);
 
 /***********************************************************************************************************************************
  *** FIN DEL MODULO

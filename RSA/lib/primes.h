@@ -1,7 +1,7 @@
 #ifndef __PRIMES_H__
 #define __PRIMES_H__
 
-unsigned int primes[] = {
+uint32_t primes[] = {
 104327,
 104347,
 104369,
